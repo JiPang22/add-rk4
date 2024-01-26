@@ -1,7 +1,7 @@
 program ab
 implicit none
 integer :: i,j,k
-integer, parameter :: imax=300000
+integer, parameter :: imax=500000
 real :: t,x,v,dx,dv,sumi,sumr,om,z1,z2,u1,u2,f,xbar,dxbar
 real, dimension(imax) :: xt,noise,signal,adap,pulse
 real, parameter :: dt=1.e-2,tau=300.
@@ -11,14 +11,34 @@ real, parameter :: dt=1.e-2,tau=300.
 t=0.
 do i=1,imax
 t=i*dt
-if ((t .gt. 1.) .and. (t .lt. 20.)) then
+!펄스 높이 늘리기
+if ((t .gt. 1.) .and. (t .lt. 10.)) then
+pulse(i) = 0.001
+
+elseif ((t .gt. 520.) .and. (t .lt. 530.)) then
+pulse(i) = 0.01
+
+elseif ((t .gt. 1040.) .and. (t .lt. 1050.)) then
+pulse(i) = 0.1
+
+elseif ((t .gt. 1560.) .and. (t .lt. 1570.)) then
+pulse(i) = 1.0
+
+elseif ((t .gt. 2080.) .and. (t .lt. 2090.)) then
+pulse(i) = 10.
+
+!펄스 폭 늘리기
+elseif ((t .gt. 3120.) .and. (t .lt. 3120+dt)) then
 pulse(i) = 1.
 
-elseif ((t .gt. 4.) .and. (t .lt. 6.)) then
+elseif ((t .gt. 3620.) .and. (t .lt. 3620+dt*10.)) then
 pulse(i) = 1.
 
-elseif ((t .gt. 10.) .and. (t .lt. 11.)) then
-pulse(i) = 5.e-4
+elseif ((t .gt. 4120.) .and. (t .lt. 4120+dt*100.)) then
+pulse(i) = 1.
+
+elseif ((t .gt. 4620.) .and. (t .lt. 4620+dt*1000.)) then
+pulse(i) = 1.
 
 else
 pulse(i) = 0.
@@ -49,7 +69,7 @@ end do
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!운동방정식 오일러 계산!!!!!!!!!!!!!!!
 open(1,file='xt')
-open(3,file='adap')
+open(3,file='sig2')
 
 !!!!!!!!초기조건!!!!!!!!!!!!
 t=0.;x=1.;v=1.
@@ -75,21 +95,47 @@ adap(i)=sign(1.,x-xbar)
 !dv=-0.1*v-x+adap(i)+noise(i)
 
 ! 자발 진동 상황 노이즈 제거
-dv=-0.1*v-x+adap(i)+0.1*noise(i)
+!dv=-0.1*v-x+adap(i)+0.*noise(i)
 
 
 ! 일반적 상황
-!dv=-0.1*v-x+adaptation(i)+signal(i)+noise(i)
+dv=-0.1*v-x+adap(i)+signal(i)+noise(i)
 
 dx=v
 v=v+dv*dt
 x=x+dx*dt
 t=i*dt
 write(1,*) t,x
-write(3,*) x,adap(i)
+write(3,*) t,noise(i)+pulse(i)
 xt(i)=x
 end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!운동방정식 계산 끝!!!!!!!!!!!!!!!!!!!
+
+
+
+
+!!!!!!!!!!!!!!!!!!노이즈 vs 펄스 신호 비교!!!!!!!!!!!!!!!!!
+!t=0.
+!write(3,*) ''
+!do i=1,imax
+!t=i*dt
+!write(3,*) t,pulse(i)
+!enddo
+!!!!!!!!!!!!!!!!!!노이즈 vs 펄스 신호 비교 끝 !!!!!!!!!!!!!!!!!
+
+
+
+
+!!!!!!!!!!!!!!!!!xt vs 펄스 신호 비교!!!!!!!!!!!!!!!!!
+t=0.
+write(1,*) ''
+do i=1,imax
+t=i*dt
+write(1,*) t,pulse(i)
+enddo
+!!!!!!!!!!!!!!!!!!xt vs 펄스 신호 비교 끝 !!!!!!!!!!!!!!!!!
+
+
 
 
 
