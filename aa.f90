@@ -158,4 +158,4 @@ enddo
 write(2,*) om, sqrt(sumi**2+sumr**2)
 enddo
 !!!!!!!!!!!!!!!!!!!!!!!!!!DFT 끝!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-end program 
+end program

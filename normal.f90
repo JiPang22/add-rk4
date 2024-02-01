@@ -25,15 +25,15 @@ program ImprovedBoxMullerHistogram
   end do
 
   ! 히스토그램 계산
-!  do i = 1, num_samples
-!    bin_index = min(100, max(1, int(random_numbers(i) * 20.0 + 50.0)))
-!    bins(bin_index) = bins(bin_index) + 1
-!  end do
-!open(1,file='aa')
+  do i = 1, num_samples
+    bin_index = min(100, max(1, int(random_numbers(i) * 20.0 + 50.0)))
+    bins(bin_index) = bins(bin_index) + 1
+  end do
+open(1,file='aa')
   ! 히스토그램 출력
-!  do i = 1, 100
-!    write(1,*) (i-50)/20.0, bins(i)
-!  end do
+  do i = 1, 100
+    write(1,*) (i-50)/20.0, bins(i)
+  end do
 
 end program ImprovedBoxMullerHistogram
 
